@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User App</title>
+</head>
+<body>
+  <h2>Add User</h2>
+  <input id="name" placeholder="Name">
+  <input id="email" placeholder="Email">
+  <button onclick="addUser()">Add</button>
+
+  <h2>Users</h2>
+  <ul id="userList"></ul>
+
+<script>
+const API = "http://localhost:5000/api/users";
+
+async function addUser() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email })
+  });
+
+  loadUsers();
+}
+
+async function loadUsers() {
+  const res = await fetch(API);
+  const users = await res.json();
+
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+
+  users.forEach(u => {
+    const li = document.createElement("li");
+    li.textContent = `${u.name} - ${u.email}`;
+    list.appendChild(li);
+  });
+}
+
+loadUsers();
+</script>
+</body>
+</html>
